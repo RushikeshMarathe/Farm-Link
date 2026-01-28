@@ -1,0 +1,6 @@
+@FarmLink_Logger_HostAddress = http://localhost:5275
+
+GET {{FarmLink_Logger_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
