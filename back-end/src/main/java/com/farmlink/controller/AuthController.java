@@ -68,16 +68,24 @@ public ResponseEntity<String> forgotPassword(
         @Valid @RequestBody ForgotPasswordDto dto) {
 
     User user = userRepository.findByEmail(dto.getEmail())
-        .orElseThrow(() ->
-            new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
+    // 🔐 Generate token
     String token = UUID.randomUUID().toString();
 
     user.setResetToken(token);
     user.setTokenExpiry(LocalDateTime.now().plusMinutes(15));
     userRepository.save(user);
 
-    emailService.sendResetMail(user.getEmail(), token);
+    // 🔗 Create reset link (Frontend URL)
+    String resetLink =
+            "http://localhost:3000/reset-password?token=" + token;
+
+    // 📧 CALL NODE EMAIL SERVICE
+    emailService.sendPasswordResetMail(
+            user.getEmail(),
+            resetLink
+    );
 
     return ResponseEntity.ok("Reset email sent");
 }
