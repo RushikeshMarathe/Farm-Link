@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 import AdminOwners from "./pages/admin/AdminOwners.jsx";
 import AdminReviews from "./pages/admin/AdminReviews.jsx";
 import AdminFarmers from "./pages/admin/AdminFarmers.jsx";
+import AdminSettings from "./pages/admin/AdminSettings.jsx";
 // path तुझ्या project structure नुसार adjust कर
 
 // import OwnerPayments from "./pages/owner/"
@@ -84,6 +85,7 @@ function App() {
           <Route path="owners" element={<AdminOwners />} />
           <Route path="reviews" element={<AdminReviews />} />
             <Route path="farmers" element={<AdminFarmers />} /> {/* ✅ */}
+            <Route path="settings" element={<AdminSettings />} /> {/* ✅ ADD */}
 
         </Route>
       </Routes>

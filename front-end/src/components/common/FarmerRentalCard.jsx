@@ -2,12 +2,17 @@ import { useState } from "react";
 import api from "../../services/api";
 import { errorToast } from "../../utils/toast";
 
-export default function FarmerRentalCard({ rental, onCancel, onPay }) {
+export default function FarmerRentalCard({
+  rental,
+  onCancel,
+  onPay,
+  onReview, // ⭐ NEW
+}) {
   const [loading, setLoading] = useState(false);
+
   const rentalId = rental?.rentalId || rental?.id;
-
   if (!rentalId) return null;
-
+ console.log(rental);
   const cancelRental = async () => {
     if (!window.confirm("Cancel this rental request?")) return;
     if (loading) return;
@@ -26,23 +31,32 @@ export default function FarmerRentalCard({ rental, onCancel, onPay }) {
 
   return (
     <div className="bg-gray-50 border rounded-xl p-4 flex justify-between items-center">
+      {/* LEFT */}
       <div>
         <h4 className="font-semibold text-green-900">
           {rental.equipmentName}
         </h4>
+
         <p className="text-xs text-gray-500">
           {rental.startDate} → {rental.endDate}
         </p>
+
         <p className="text-sm mt-1">
           Owner: <b>{rental.ownerName}</b>
         </p>
       </div>
 
+      {/* RIGHT */}
       <div className="flex items-center gap-3">
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+        {/* STATUS */}
+        <span className="
+          px-3 py-1 rounded-full text-xs font-semibold
+          bg-yellow-100 text-yellow-700
+        ">
           {rental.status}
         </span>
 
+        {/* PENDING */}
         {rental.status === "PENDING" && (
           <button
             onClick={cancelRental}
@@ -53,12 +67,26 @@ export default function FarmerRentalCard({ rental, onCancel, onPay }) {
           </button>
         )}
 
+        {/* APPROVED */}
         {rental.status === "APPROVED" && (
           <button
             onClick={() => onPay(rental)}
             className="bg-green-600 text-white px-3 py-1 rounded text-xs"
           >
             Pay 💳
+          </button>
+        )}
+
+        {/* ✅ COMPLETED → ADD REVIEW */}
+        {rental.status === "COMPLETED" && (
+          <button
+            onClick={() => onReview(rental)}
+            className="
+              bg-yellow-500 hover:bg-yellow-600
+              text-white px-3 py-1 rounded text-xs
+            "
+          >
+            Add Review ⭐
           </button>
         )}
       </div>

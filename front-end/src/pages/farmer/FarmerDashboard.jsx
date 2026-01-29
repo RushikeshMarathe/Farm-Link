@@ -5,33 +5,37 @@ import api from "../../services/api";
 import DashboardCard from "../../components/common/DashboardCard";
 import FarmerRentalCard from "../../components/common/FarmerRentalCard";
 import PaymentModal from "../../components/modals/PaymentModal";
+import ReviewModal from "../../components/modals/ReviewModal";
 
 export default function FarmerDashboard() {
   const [allRentals, setAllRentals] = useState([]);
   const [recentRentals, setRecentRentals] = useState([]);
   const [farmer, setFarmer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedRental, setSelectedRental] = useState(null);
+
+  const [selectedRental, setSelectedRental] = useState(null); // 💳 payment
+  const [reviewRental, setReviewRental] = useState(null);     // ⭐ review
 
   const navigate = useNavigate();
 
   // ================= LOAD DASHBOARD =================
   const loadDashboard = async () => {
     try {
+      setLoading(true);
+
       const [rentalsRes, farmerRes] = await Promise.all([
         api.get("/rentals/farmer"),
         api.get("/farmers/profile"),
       ]);
 
-      const rentalsData = Array.isArray(rentalsRes.data)
+      const rentals = Array.isArray(rentalsRes.data)
         ? rentalsRes.data
         : [];
-       console.log("renatalsData :"+rentalsData.data);
-      // 🔹 ALL rentals → for stats
-      setAllRentals(rentalsData);
 
-      // 🔹 RECENT 3 rentals → for list
-      const recent = [...rentalsData]
+      setAllRentals(rentals);
+
+      // 🔹 recent 3 rentals
+      const recent = [...rentals]
         .sort(
           (a, b) =>
             new Date(b.createdAt || b.startDate) -
@@ -54,38 +58,49 @@ export default function FarmerDashboard() {
 
   // ================= STATS =================
   const totalRequests = allRentals.length;
+
   const approvedCount = allRentals.filter(
     r => r.status === "APPROVED"
   ).length;
+
   const pendingCount = allRentals.filter(
     r => r.status === "PENDING"
   ).length;
 
-  // ================= PAY =================
+  const completedCount = allRentals.filter(
+    r => r.status === "COMPLETED"
+  ).length;
+
+  // ================= ACTIONS =================
   const handlePay = (rental) => {
     setSelectedRental(rental);
   };
 
+  const handleReview = (rental) => {
+    setReviewRental(rental);
+  };
+
   return (
     <>
-      {/* HEADER */}
+      {/* ===== HEADER ===== */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-green-900">
           Hello {farmer?.firstName || "Farmer"} 👨‍🌾
         </h1>
         <p className="text-gray-600 mt-1">
-          Manage your rental requests and payments
+          Manage rentals, payments & reviews
         </p>
       </div>
 
-      {/* STATS */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+      {/* ===== STATS ===== */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
         <DashboardCard title="Total Requests" value={totalRequests} />
         <DashboardCard title="Approved Rentals" value={approvedCount} />
         <DashboardCard title="Pending Requests" value={pendingCount} />
+        <DashboardCard title="Completed Rentals" value={completedCount} />
       </div>
 
-      {/* RECENT RENTALS */}
+      {/* ===== RECENT RENTALS ===== */}
       <div className="bg-white rounded-2xl shadow p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">
@@ -108,25 +123,38 @@ export default function FarmerDashboard() {
           </p>
         ) : (
           <div className="space-y-4">
-            {recentRentals.map(rental => (
+            {recentRentals.map((rental) => (
               <FarmerRentalCard
                 key={rental.rentalId || rental.id}
                 rental={rental}
                 onPay={handlePay}
                 onCancel={loadDashboard}
+                onReview={handleReview}   // ⭐ review hook
               />
             ))}
           </div>
         )}
       </div>
 
-      {/* PAYMENT MODAL */}
+      {/* ===== PAYMENT MODAL ===== */}
       {selectedRental && (
         <PaymentModal
           rental={selectedRental}
           onClose={() => setSelectedRental(null)}
           onSuccess={() => {
             setSelectedRental(null);
+            loadDashboard();
+          }}
+        />
+      )}
+
+      {/* ===== REVIEW MODAL ===== */}
+      {reviewRental && (
+        <ReviewModal
+          rental={reviewRental}
+          onClose={() => setReviewRental(null)}
+          onSuccess={() => {
+            setReviewRental(null);
             loadDashboard();
           }}
         />
