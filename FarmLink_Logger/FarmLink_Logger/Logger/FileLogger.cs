@@ -15,7 +15,7 @@
 
         public void Log(string message)
         {
-            string dir = "D:\\LoggerData";
+            string dir = "C:\\LoggerData";
             string path = dir + "\\FarmLinkLog.txt";
 
             Directory.CreateDirectory(dir);

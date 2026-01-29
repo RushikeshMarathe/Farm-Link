@@ -30,6 +30,8 @@ public class AuthServiceImpl implements AuthService {
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final EmailService emailService;
+
 
     // 🔐 REQUIRED FOR LOGIN
     private final AuthenticationManager authenticationManager;
@@ -63,6 +65,16 @@ public class AuthServiceImpl implements AuthService {
             address.setUser(savedUser);
             addressRepository.save(address);
         }
+        
+
+     // save address (already done)
+
+     // 📧 SEND EMAIL
+     emailService.sendRegistrationSuccessMail(
+             savedUser.getEmail(),
+             savedUser.getFirstName()
+     );
+
     }
 
     // ================= LOGIN =================
