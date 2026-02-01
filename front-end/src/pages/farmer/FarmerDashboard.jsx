@@ -92,12 +92,27 @@ export default function FarmerDashboard() {
         </p>
       </div>
 
-      {/* ===== STATS ===== */}
+      {/* ===== STATS GRID ✅ FIXED ===== */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-10">
-        <DashboardCard title="Total Requests" value={totalRequests} />
-        <DashboardCard title="Approved Rentals" value={approvedCount} />
-        <DashboardCard title="Pending Requests" value={pendingCount} />
-        <DashboardCard title="Completed Rentals" value={completedCount} />
+        <DashboardCard
+          title="Total Requests"
+          value={totalRequests}
+        />
+
+        <DashboardCard
+          title="Approved Rentals"
+          value={approvedCount}
+        />
+
+        <DashboardCard
+          title="Pending Requests"
+          value={pendingCount}
+        />
+
+        <DashboardCard
+          title="Completed Rentals"
+          value={completedCount}
+        />
       </div>
 
       {/* ===== RECENT RENTALS ===== */}
@@ -123,7 +138,7 @@ export default function FarmerDashboard() {
           </p>
         ) : (
           <div className="space-y-4">
-            {recentRentals.map((rental) => (
+            {recentRentals.map(rental => (
               <FarmerRentalCard
                 key={rental.rentalId || rental.id}
                 rental={rental}

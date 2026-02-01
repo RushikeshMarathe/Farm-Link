@@ -4,6 +4,7 @@ const { sendMail } = require("../services/emailService");
 
 exports.sendEmail = async (req, res) => {
   try {
+    console.log("inside controller")
     const { to, type, resetLink } = req.body;
 
     let subject;
@@ -26,7 +27,7 @@ exports.sendEmail = async (req, res) => {
     }
 
     await sendMail(to, subject, html);
-
+    console.log("email sended successfully")
     res.json({ success: true, message: "Email sent successfully" });
   } catch (err) {
     console.error(err);

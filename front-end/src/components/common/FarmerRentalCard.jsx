@@ -12,7 +12,7 @@ export default function FarmerRentalCard({
 
   const rentalId = rental?.rentalId || rental?.id;
   if (!rentalId) return null;
- console.log(rental);
+ 
   const cancelRental = async () => {
     if (!window.confirm("Cancel this rental request?")) return;
     if (loading) return;

@@ -15,6 +15,7 @@ export default function OwnerDashboard() {
 
   const loadRentals = async () => {
     try {
+      setLoading(true);
       const res = await getOwnerRentals();
       setRentals(res.data || []);
     } catch (err) {
@@ -33,32 +34,48 @@ export default function OwnerDashboard() {
     r => r.status === "APPROVED"
   ).length;
 
-  // ================= RECENT (LAST 5) =================
+  // ================= RECENT =================
   const recentRentals = [...rentals]
     .sort((a, b) => b.rentalId - a.rentalId)
     .slice(0, 3);
 
   return (
-    <div>
-      {/* HEADER */}
-      <h1 className="text-2xl font-bold mb-1">
-        Owner Dashboard 🏭
-      </h1>
-      <p className="text-gray-500 mb-6">
-        Manage your equipments and rental requests
-      </p>
-
-      {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <DashboardCard title="Total Rentals" value={totalRentals} />
-        <DashboardCard title="Pending Requests" value={pendingRequests} />
-        <DashboardCard title="Approved Rentals" value={approvedRentals} />
+    <div className="max-w-7xl mx-auto">
+      {/* ===== HEADER ===== */}
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-green-900">
+          Owner Dashboard 🏭
+        </h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">
+          Manage your equipments and rental requests
+        </p>
       </div>
 
-      {/* RECENT RENTALS */}
-      <div className="bg-white rounded-2xl shadow p-6">
+      {/* ===== STATS ===== */}
+      <div className="
+        grid gap-4 sm:gap-6 mb-10
+        grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-3
+      ">
+        <DashboardCard
+          title="Total Rentals"
+          value={totalRentals}
+        />
+        <DashboardCard
+          title="Pending Requests"
+          value={pendingRequests}
+        />
+        <DashboardCard
+          title="Approved Rentals"
+          value={approvedRentals}
+        />
+      </div>
+
+      {/* ===== RECENT RENTALS ===== */}
+      <div className="bg-white rounded-2xl shadow p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-lg sm:text-xl font-semibold">
             Recent Rental Requests
           </h2>
 
@@ -71,11 +88,13 @@ export default function OwnerDashboard() {
         </div>
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="py-10 text-center text-gray-500">
+            Loading rentals...
+          </div>
         ) : recentRentals.length === 0 ? (
-          <p className="text-gray-500">
+          <div className="py-10 text-center text-gray-500">
             No rental requests yet
-          </p>
+          </div>
         ) : (
           <div className="grid gap-4">
             {recentRentals.map(rental => (

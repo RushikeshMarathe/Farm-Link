@@ -79,7 +79,7 @@ public ResponseEntity<String> forgotPassword(
 
     // 🔗 Create reset link (Frontend URL)
     String resetLink =
-            "http://localhost:3000/reset-password?token=" + token;
+            "http://localhost:5173/reset-password?token=" + token;
 
     // 📧 CALL NODE EMAIL SERVICE
     emailService.sendPasswordResetMail(

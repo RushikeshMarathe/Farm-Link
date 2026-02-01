@@ -11,6 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendMail(to, subject, html) {
+  console.log("inside sendemail");
   await transporter.sendMail({
     from: `"FarmLink" <${process.env.EMAIL_USER}>`,
     to,

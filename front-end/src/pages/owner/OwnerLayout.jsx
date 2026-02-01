@@ -1,7 +1,8 @@
+// pages/owner/OwnerLayout.jsx
 import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slices/authSlice";
-import Sidebar from "../../components/sidebar/OwnerSidebar";
+import OwnerSidebar from "../../components/sidebar/OwnerSidebar";
 
 export default function OwnerLayout() {
   const dispatch = useDispatch();
@@ -14,17 +15,22 @@ export default function OwnerLayout() {
   };
 
   return (
-    // ✅ Full viewport height, body scroll disabled
-    <div className="h-screen flex overflow-hidden bg-green-50">
+    <div className="min-h-screen bg-green-50">
+      {/* ===== SIDEBAR (responsive) ===== */}
+      <OwnerSidebar onLogout={handleLogout} />
 
-      {/* ✅ FIXED SIDEBAR */}
-      <Sidebar onLogout={handleLogout} />
-
-      {/* ✅ ONLY MAIN CONTENT SCROLLS */}
-      <main className="flex-1 overflow-y-auto p-6 sm:p-8">
+      {/* ===== MAIN CONTENT ===== */}
+      <main
+        className="
+          pt-16 md:pt-0        /* mobile top bar space */
+          md:ml-64            /* sidebar width on desktop */
+          min-h-screen
+          p-4 sm:p-6 md:p-8
+          overflow-y-auto
+        "
+      >
         <Outlet />
       </main>
-
     </div>
   );
 }
